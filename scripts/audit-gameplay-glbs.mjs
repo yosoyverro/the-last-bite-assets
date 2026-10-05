@@ -65,3 +65,33 @@ for (const name of files) {
   }
 }
 if (failed) process.exit(1);
+
+
+for (const file of ['models/boy/boy-swat.glb','models/girl/girl-swat.glb']) {
+  try {
+    const { buf, json } = readGlb(file);
+    const animations = json.animations ?? [];
+    const channels = animations.flatMap(a => a.channels ?? []);
+    const nodes = json.nodes ?? [];
+    const targets = channels.map(ch => ({
+      node: ch?.target?.node,
+      name: nodes[ch?.target?.node]?.name ?? null,
+      path: ch?.target?.path ?? null,
+    }));
+    console.log(JSON.stringify({
+      file,
+      bytes: buf.length,
+      animations: animations.length,
+      animationNames: animations.map(a => a.name ?? null),
+      channels: channels.length,
+      targetSample: targets.slice(0, 20),
+    }));
+    if (!animations.length || !channels.length) {
+      console.error(`AUDIT_FAIL ${file}: no usable animation channels`);
+      failed = true;
+    }
+  } catch (error) {
+    console.error(`AUDIT_FAIL ${file}: ${error.message}`);
+    failed = true;
+  }
+}
