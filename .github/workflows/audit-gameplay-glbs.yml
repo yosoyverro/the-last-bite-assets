@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'models/gameplay items/*.glb'
+      - 'models/boy/boy-swat.glb'
+      - 'models/girl/girl-swat.glb'
       - 'scripts/audit-gameplay-glbs.mjs'
       - '.github/workflows/audit-gameplay-glbs.yml'
   workflow_dispatch:
